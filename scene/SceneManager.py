@@ -4,6 +4,7 @@ import time
 
 from Scene import GraphicScene
 from algorhitms.Line import Line
+from algorhitms.Curve import Curve
 
 def singleton(cls):
 	instances = {}
@@ -73,4 +74,16 @@ class SceneManger :
 			self.__scene.drawPixel(x,y)
 			if self.__debugMode:
 				time.sleep(0.01)
+
+	def drawCurve(self):
+		first,last = self.__scene.getEndingPointsPos()
+		pixelSize = self.__scene.getPixelSize()
+		pixels = Curve.Bresenham(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
+		for pixel in pixels:
+			x = round(pixel[0])*pixelSize
+			y = round(pixel[1])*pixelSize
+			self.__scene.drawPixel(x,y)
+			if self.__debugMode:
+				time.sleep(0.01)
+
 

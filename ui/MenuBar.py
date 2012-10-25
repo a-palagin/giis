@@ -11,10 +11,12 @@ class MenuBar(QtGui.QMenuBar):
 	def __init__(self):
 		super(MenuBar,self).__init__()
 		self.__sceneManager = SceneManger()
-		self.algorithmsMenu = self.addMenu("algorithms")
+		self.lineMenu = self.addMenu("Line")
+		self.curveMenu = self.addMenu("Curve")
 		self.settingsMenu = self.addMenu("settings")
-		self.algorithmsMenu.addAction("DDA").triggered.connect(self.DDA)
-		self.algorithmsMenu.addAction("Bresenham").triggered.connect(self.Bresenham)
+		self.lineMenu.addAction("DDA").triggered.connect(self.DDA)
+		self.lineMenu.addAction("Bresenham").triggered.connect(self.Bresenham)
+		self.curveMenu.addAction("Bresenham").triggered.connect(self.test)
 		self.settingsMenu.addAction("set pixel size").triggered.connect(self.pixelSizeMenu)
 		self.settingsMenu.addAction("clear").triggered.connect(self.clearScene)
 		debugMode = self.settingsMenu.addAction("debug mode")
@@ -44,3 +46,7 @@ class MenuBar(QtGui.QMenuBar):
 
 	def DDA(self):
 		th = thread.start_new_thread(self.__sceneManager.drawCDA, tuple())
+
+
+	def test(self):
+		self.__sceneManager.drawCurve()
