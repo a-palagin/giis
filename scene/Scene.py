@@ -77,6 +77,7 @@ class GraphicScene(QtGui.QGraphicsScene):
 		pixel = self.addRect(0,0,self.__pixelSize,self.__pixelSize)
 		pixel.setBrush(QtGui.QBrush(QtCore.Qt.black))
 		pixel.setPos(x,y)
+		self.update()
 		self.__pixels.append(pixel)
 
 	def getPixelsOnScene(self):

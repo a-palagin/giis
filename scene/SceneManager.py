@@ -1,5 +1,7 @@
 __author__ = 'apalagin'
 
+import time
+
 from Scene import GraphicScene
 from algorhitms.Line import Line
 
@@ -15,6 +17,7 @@ def singleton(cls):
 class SceneManger :
 	def __init__(self):
 		self.__scene = GraphicScene()
+		self.__debugMode = False
 
 	def getScene(self):
 		return self.__scene
@@ -23,6 +26,12 @@ class SceneManger :
 		if isinstance(scene,GraphicScene):
 			self.__scene = scene
 		raise Exception("must be instance of GraphicScene")
+
+	def setDebugMode(self,mode):
+		self.__debugMode = mode
+
+	def isDebugMode(self):
+		return self.__debugMode
 
 	def redrawGrid(self):
 		self.__scene.clearGrid()
@@ -49,10 +58,17 @@ class SceneManger :
 		pixels = Line.CDA(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
 		for pixel in pixels:
 			self.__scene.drawPixel(round(pixel[0])*pixelSize,round(pixel[1])*pixelSize)
+			if self.__debugMode:
+				time.sleep(0.1)
 
 	def drawBresenham(self):
 		first,last = self.__scene.getEndingPointsPos()
 		pixelSize = self.__scene.getPixelSize()
 		pixels = Line.Bresenham(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
 		for pixel in pixels:
-			self.__scene.drawPixel(round(pixel[0])*pixelSize,round(pixel[1])*pixelSize)
+			x = round(pixel[0])*pixelSize
+			y = round(pixel[1])*pixelSize
+			self.__scene.drawPixel(x,y)
+			if self.__debugMode:
+				time.sleep(0.1)
+
