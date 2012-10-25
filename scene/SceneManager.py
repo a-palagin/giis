@@ -57,9 +57,11 @@ class SceneManger :
 		pixelSize = self.__scene.getPixelSize()
 		pixels = Line.CDA(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
 		for pixel in pixels:
-			self.__scene.drawPixel(round(pixel[0])*pixelSize,round(pixel[1])*pixelSize)
+			x = round(pixel[0])*pixelSize
+			y = round(pixel[1])*pixelSize
+			self.__scene.drawPixel(x,y)
 			if self.__debugMode:
-				time.sleep(0.1)
+				time.sleep(0.01)
 
 	def drawBresenham(self):
 		first,last = self.__scene.getEndingPointsPos()
@@ -70,5 +72,5 @@ class SceneManger :
 			y = round(pixel[1])*pixelSize
 			self.__scene.drawPixel(x,y)
 			if self.__debugMode:
-				time.sleep(0.1)
+				time.sleep(0.01)
 

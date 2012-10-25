@@ -15,33 +15,27 @@ class GraphicScene(QtGui.QGraphicsScene):
 		self.drawGrid()
 		self.__pixels = []
 
-	def mouseDoubleClickEvent(self,event):
+	def mousePressEvent(self,event):
 		x = event.scenePos().x() - (event.scenePos().x() % self.__pixelSize)
 		y = event.scenePos().y() - (event.scenePos().y() % self.__pixelSize)
-		if not self.__firstPoint:
-			self.__firstPoint = self.addEllipse(0, 0, self.__pixelSize, self.__pixelSize)
-			self.__firstPoint.setBrush(QtGui.QBrush(QtCore.Qt.red))
-			#и этот тоже
-			self.__firstPoint.setPos(x, y)
-		elif self.__lastPoint:
-			self.__lastPoint.setPos(x, y)
-		else:
-			self.__lastPoint = self.addEllipse(0,0,self.__pixelSize,self.__pixelSize)
-			self.__lastPoint.setBrush(QtGui.QBrush(QtCore.Qt.blue))
-			#адовый пиздец
-			self.__lastPoint.setPos(x, y)
-
-	def mousePressEvent(self,event):
-		if event.button() == QtCore.Qt.RightButton:
-			item = self.itemAt(event.scenePos())
-			if item:
-				if item is self.__firstPoint:
-					self.removeItem(item)
-					self.__firstPoint = None
-				elif item is self.__lastPoint:
-					self.removeItem(item)
-					self.__lastPoint = None
-				self.update()
+		if event.button() == QtCore.Qt.LeftButton:
+			if not self.__firstPoint:
+				self.__firstPoint = self.addEllipse(0, 0, self.__pixelSize, self.__pixelSize)
+				self.__firstPoint.setBrush(QtGui.QBrush(QtCore.Qt.red))
+				self.__firstPoint.setZValue(99)
+				#адовый пиздец
+				self.__firstPoint.setPos(x, y)
+			else:
+				self.__firstPoint.setPos(x, y)
+		elif event.button() == QtCore.Qt.RightButton:
+			if not self.__lastPoint:
+				self.__lastPoint = self.addEllipse(0,0,self.__pixelSize,self.__pixelSize)
+				self.__lastPoint.setBrush(QtGui.QBrush(QtCore.Qt.blue))
+				self.__lastPoint.setZValue(99)
+				#и этот тоже
+				self.__lastPoint.setPos(x, y)
+			else:
+				self.__lastPoint.setPos(x, y)
 
 	def setPixelSize(self, newSize):
 		self.__pixelSize = newSize
@@ -57,7 +51,6 @@ class GraphicScene(QtGui.QGraphicsScene):
 				self.__gridContainer.append(self.addLine(0,y*self.__pixelSize,width,y*self.__pixelSize))
 			for x in xrange(width/self.__pixelSize+1):
 				self.__gridContainer.append(self.addLine(x*self.__pixelSize,0,x*self.__pixelSize,height))
-
 
 	def clearEndingPoints(self):
 		if self.__firstPoint:
