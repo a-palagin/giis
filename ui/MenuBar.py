@@ -35,17 +35,14 @@ class MenuBar(QtGui.QMenuBar):
 		print "clear scene"
 
 	def debugTrigger(self):
-		if self.__sceneManager.isDebugMode():
-			self.__sceneManager.setDebugMode(False)
-		else:
-			self.__sceneManager.setDebugMode(True)
-		print "debug"
+		self.__sceneManager.setDebugMode(not self.__sceneManager.isDebugMode())
+
 
 	def Bresenham(self):
 		th = thread.start_new_thread(self.__sceneManager.drawBresenham, tuple())
 
 	def DDA(self):
-		th = thread.start_new_thread(self.__sceneManager.drawCDA, tuple())
+		th = thread.start_new_thread(self.__sceneManager.drawDDA, tuple())
 
 
 	def test(self):
