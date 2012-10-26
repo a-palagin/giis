@@ -4,9 +4,13 @@ import math
 class Line:
 
 	@staticmethod
-	def CDA(x1,y1,x2,y2):
+	def CDA(points):
+		x1 = points[0][0]
+		y1 = points[0][1]
+		x2 = points[1][0]
+		y2 = points[1][1]
 		pixels = []
-		print x1,y1,x2,y2
+		#print x1,y1,x2,y2
 		len = max(abs(x2 - x1), abs(y2 - y1))
 		dx = (x2 - x1) / len
 		dy = (y2 - y1) / len
@@ -24,7 +28,11 @@ class Line:
 		return pixels
 
 	@staticmethod
-	def Bresenham(x1,y1,x2,y2):
+	def Bresenham(points):
+		x1 = points[0][0]
+		y1 = points[0][1]
+		x2 = points[1][0]
+		y2 = points[1][1]
 		pixels = []
 		dx = x2 - x1
 		dy = y2 - y1
@@ -60,3 +68,6 @@ class Line:
 			pixels.append((x,y))
 		return pixels
 
+	@staticmethod
+	def Bresenham_(points):
+		print points[0],points[1]
