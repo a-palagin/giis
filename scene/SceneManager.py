@@ -2,6 +2,8 @@ __author__ = 'apalagin'
 
 import time
 
+from PySide import QtCore
+
 from Scene import GraphicScene
 from algorhitms.Line import Line
 from algorhitms.Curve import Curve
@@ -19,6 +21,9 @@ class SceneManger :
 	def __init__(self):
 		self.__scene = GraphicScene()
 		self.__debugMode = False
+		self.__pixelsToDraw = []
+		self.__debugTimer = QtCore.QTimer()
+		self.__debugTimer.timeout.connect(self.__drawNext)
 
 	def getScene(self):
 		return self.__scene
@@ -54,34 +59,42 @@ class SceneManger :
 		self.__scene.clearSceneFromPixels()
 
 	def drawDDA(self):
+		self.__pixelsToDraw = []
 		points =  self.__scene.getEndingPointsPos()
-		pixels = Line.CDA(points)
-		for pixel in pixels:
-			x = round(pixel[0])*self.__scene.getPixelSize()
-			y = round(pixel[1])*self.__scene.getPixelSize()
-			self.__scene.drawPixel(x,y)
-			if self.__debugMode:
-				time.sleep(0.01)
+		self.__pixelsToDraw  = Line.CDA(points)
+		self.__drawPixels()
 
 	def drawBresenham(self):
+		self.__pixelsToDraw = []
 		points =  self.__scene.getEndingPointsPos()
-		pixels = Line.Bresenham(points)
-		for pixel in pixels:
+		self.__pixelsToDraw = Line.Bresenham(points)
+		self.__drawPixels()
+
+	def __drawPixels(self):
+		if self.__debugMode:
+			self.__debugTimer.start(100)
+		else:
+			while self.__pixelsToDraw:
+				self.__drawNext()
+
+	def __drawNext(self):
+		if self.__pixelsToDraw:
+			pixel = self.__pixelsToDraw.pop()
 			x = round(pixel[0])*self.__scene.getPixelSize()
 			y = round(pixel[1])*self.__scene.getPixelSize()
 			self.__scene.drawPixel(x,y)
-			if self.__debugMode:
-				time.sleep(0.01)
+		else:
+			self.__debugTimer.stop()
 
-	def drawCurve(self):
-		first,last = self.__scene.getEndingPointsPos()
-		pixelSize = self.__scene.getPixelSize()
-		pixels = Curve.Bresenham(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
-		for pixel in pixels:
-			x = round(pixel[0])*pixelSize
-			y = round(pixel[1])*pixelSize
-			self.__scene.drawPixel(x,y)
-			if self.__debugMode:
-				time.sleep(0.01)
+#	def drawCurve(self):
+#		first,last = self.__scene.getEndingPointsPos()
+#		pixelSize = self.__scene.getPixelSize()
+#		pixels = Curve.Bresenham(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
+#		for pixel in pixels:
+#			x = round(pixel[0])*pixelSize
+#			y = round(pixel[1])*pixelSize
+#			self.__scene.drawPixel(x,y)
+#			if self.__debugMode:
+#				time.sleep(0.01)
 
 

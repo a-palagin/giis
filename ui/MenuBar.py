@@ -39,10 +39,10 @@ class MenuBar(QtGui.QMenuBar):
 
 
 	def Bresenham(self):
-		th = thread.start_new_thread(self.__sceneManager.drawBresenham, tuple())
+		self.__sceneManager.drawBresenham()
 
 	def DDA(self):
-		th = thread.start_new_thread(self.__sceneManager.drawDDA, tuple())
+		self.__sceneManager.drawDDA()
 
 
 	def test(self):
