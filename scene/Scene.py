@@ -7,8 +7,7 @@ from PySide import QtGui, QtCore
 class GraphicScene(QtGui.QGraphicsScene):
 	def __init__(self):
 		super(GraphicScene,self).__init__()
-		self.__firstPoint  = None #QtGui.QGraphicsEllipseItem()
-		self.__lastPoint  = None #QtGui.QGraphicsEllipseItem()
+		self.__points = []
 		self.__gridContainer = []
 		self.__pixelSize = 10
 		self.setSceneRect(0,0,640,480)
@@ -19,23 +18,19 @@ class GraphicScene(QtGui.QGraphicsScene):
 		x = event.scenePos().x() - (event.scenePos().x() % self.__pixelSize)
 		y = event.scenePos().y() - (event.scenePos().y() % self.__pixelSize)
 		if event.button() == QtCore.Qt.LeftButton:
-			if not self.__firstPoint:
-				self.__firstPoint = self.addEllipse(0, 0, self.__pixelSize, self.__pixelSize)
-				self.__firstPoint.setBrush(QtGui.QBrush(QtCore.Qt.red))
-				self.__firstPoint.setZValue(99)
-				#адовый пиздец
-				self.__firstPoint.setPos(x, y)
+			if self.itemAt(event.scenePos().x(),event.scenePos().y()) in self.__points:
+				pass
 			else:
-				self.__firstPoint.setPos(x, y)
+				point = self.addEllipse(0, 0, self.__pixelSize, self.__pixelSize)
+				point.setBrush(QtGui.QBrush(QtCore.Qt.red))
+				point.setZValue(99)
+				point.setPos(x,y)
+				self.__points.append(point)
 		elif event.button() == QtCore.Qt.RightButton:
-			if not self.__lastPoint:
-				self.__lastPoint = self.addEllipse(0,0,self.__pixelSize,self.__pixelSize)
-				self.__lastPoint.setBrush(QtGui.QBrush(QtCore.Qt.blue))
-				self.__lastPoint.setZValue(99)
-				#и этот тоже
-				self.__lastPoint.setPos(x, y)
-			else:
-				self.__lastPoint.setPos(x, y)
+			if self.itemAt(event.scenePos().x(),event.scenePos().y()) in self.__points:
+				point  = self.itemAt(event.scenePos().x(),event.scenePos().y())
+				self.removeItem(point)
+				self.__points.remove(point)
 
 	def setPixelSize(self, newSize):
 		self.__pixelSize = newSize
@@ -53,12 +48,8 @@ class GraphicScene(QtGui.QGraphicsScene):
 				self.__gridContainer.append(self.addLine(x*self.__pixelSize,0,x*self.__pixelSize,height))
 
 	def clearEndingPoints(self):
-		if self.__firstPoint:
-			self.removeItem(self.__firstPoint)
-			self.__firstPoint = None
-		if self.__lastPoint:
-			self.removeItem(self.__lastPoint)
-			self.__lastPoint = None
+		while len(self.__points):
+			self.removeItem(self.__points.pop())
 		self.update()
 
 	def clearGrid(self):
@@ -82,4 +73,4 @@ class GraphicScene(QtGui.QGraphicsScene):
 		self.update()
 
 	def getEndingPointsPos(self):
-		return self.__firstPoint.pos(), self.__lastPoint.pos()
+		return [(point.pos().x()/self.__pixelSize,point.pos().y()/self.__pixelSize) for point in self.__points]

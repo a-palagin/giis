@@ -53,24 +53,22 @@ class SceneManger :
 		self.__scene.clearEndingPoints()
 		self.__scene.clearSceneFromPixels()
 
-	def drawCDA(self):
-		first,last = self.__scene.getEndingPointsPos()
-		pixelSize = self.__scene.getPixelSize()
-		pixels = Line.CDA(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
+	def drawDDA(self):
+		points =  self.__scene.getEndingPointsPos()
+		pixels = Line.CDA(points)
 		for pixel in pixels:
-			x = round(pixel[0])*pixelSize
-			y = round(pixel[1])*pixelSize
+			x = round(pixel[0])*self.__scene.getPixelSize()
+			y = round(pixel[1])*self.__scene.getPixelSize()
 			self.__scene.drawPixel(x,y)
 			if self.__debugMode:
 				time.sleep(0.01)
 
 	def drawBresenham(self):
-		first,last = self.__scene.getEndingPointsPos()
-		pixelSize = self.__scene.getPixelSize()
-		pixels = Line.Bresenham(first.x()/pixelSize,first.y()/pixelSize,last.x()/pixelSize,last.y()/pixelSize)
+		points =  self.__scene.getEndingPointsPos()
+		pixels = Line.Bresenham(points)
 		for pixel in pixels:
-			x = round(pixel[0])*pixelSize
-			y = round(pixel[1])*pixelSize
+			x = round(pixel[0])*self.__scene.getPixelSize()
+			y = round(pixel[1])*self.__scene.getPixelSize()
 			self.__scene.drawPixel(x,y)
 			if self.__debugMode:
 				time.sleep(0.01)
