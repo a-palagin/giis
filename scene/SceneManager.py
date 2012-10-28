@@ -57,22 +57,21 @@ class SceneManger :
 	def clearAll(self):
 		self.__scene.clearEndingPoints()
 		self.__scene.clearSceneFromPixels()
+		self.__pixelsToDraw = []
 
 	def drawDDA(self):
-		self.__pixelsToDraw = []
 		points =  self.__scene.getEndingPointsPos()
-		self.__pixelsToDraw  = Line.CDA(points)
+		self.__pixelsToDraw  += Line.CDA(points)
 		self.__drawPixels()
 
 	def drawBresenham(self):
-		self.__pixelsToDraw = []
 		points =  self.__scene.getEndingPointsPos()
-		self.__pixelsToDraw = Line.Bresenham(points)
+		self.__pixelsToDraw += Line.Bresenham(points)
 		self.__drawPixels()
 
 	def __drawPixels(self):
 		if self.__debugMode:
-			self.__debugTimer.start(100)
+			self.__debugTimer.start(250)
 		else:
 			while self.__pixelsToDraw:
 				self.__drawNext()
