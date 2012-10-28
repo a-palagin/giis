@@ -2,8 +2,6 @@ __author__ = 'apalagin'
 
 import math
 
-import numpy
-
 class Curve:
 
 	@staticmethod
