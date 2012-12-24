@@ -13,7 +13,6 @@ class GraphicScene(QtGui.QGraphicsScene):
         self.setSceneRect(0,0,640,480)
         self.drawGrid()
         self.__pixels = []
-        self.__pixelColour = (0,0,0) #RGB
 
     def mousePressEvent(self,event):
         x = event.scenePos().x() - (event.scenePos().x() % self.__pixelSize)
@@ -58,9 +57,10 @@ class GraphicScene(QtGui.QGraphicsScene):
             self.removeItem(self.__gridContainer.pop())
         self.update()
 
-    def drawPixel(self,x,y):
+    def drawPixel(self,pixel):
+        x,y,color = pixel.x, pixel.y, pixel.color
         pixel = self.addRect(0,0,self.__pixelSize,self.__pixelSize)
-        pixel.setBrush(QtGui.QBrush(QtGui.QColor(*(self.__pixelColour))))
+        pixel.setBrush(QtGui.QBrush(QtGui.QColor(color.r, color.g, color.b)))
         pixel.setPos(x,y)
         self.update()
         self.__pixels.append(pixel)
@@ -75,9 +75,3 @@ class GraphicScene(QtGui.QGraphicsScene):
 
     def getEndingPointsPos(self):
         return [(point.pos().x()/self.__pixelSize,point.pos().y()/self.__pixelSize) for point in self.__points]
-
-    def setPixelColour(self, r, g, b):
-        self.__pixelColour = (r, g, b)
-
-    def getPixelColour(self):
-        return self.__pixelColour

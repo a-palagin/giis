@@ -4,7 +4,7 @@ __author__ = 'apalagin'
 
 from PySide import QtCore
 
-from utils.utils import singleton, MinPointsCountError
+from utils.utils import singleton, MinPointsCountError, convert, Colors
 from Scene import GraphicScene
 from algorhitms.Line import CDA, Bresenham
 from algorhitms.Curve import Bezie, BSpline, Circle, Parabola
@@ -16,6 +16,7 @@ class SceneManger :
         self.__scene = GraphicScene()
         self.__debugMode = False
         self.__pixelsToDraw = []
+        self.__pixelsOnScene = []
         self.__debugTimer = QtCore.QTimer()
         self.__debugTimer.timeout.connect(self.__drawNext)
 
@@ -52,6 +53,7 @@ class SceneManger :
         self.__scene.clearEndingPoints()
         self.__scene.clearSceneFromPixels()
         self.__pixelsToDraw = []
+        self.__pixelsOnScene = []
 
     def __drawPixels(self):
         if self.__debugMode:
@@ -63,9 +65,9 @@ class SceneManger :
     def __drawNext(self):
         if self.__pixelsToDraw:
             pixel = self.__pixelsToDraw.pop()
-            x = round(pixel[0])*self.__scene.getPixelSize()
-            y = round(pixel[1])*self.__scene.getPixelSize()
-            self.__scene.drawPixel(x,y)
+            pixel.x = round(pixel.x)*self.__scene.getPixelSize()
+            pixel.y = round(pixel.y)*self.__scene.getPixelSize()
+            self.__scene.drawPixel(pixel)
         else:
             self.__debugTimer.stop()
 
@@ -73,7 +75,7 @@ class SceneManger :
         if not points:
             points =  self.__scene.getEndingPointsPos()
         while len(points) >= CDA.getMinPointsCount():
-            self.__pixelsToDraw  += CDA.getPixels(points)
+            self.__pixelsToDraw  += convert(CDA.getPixels(points))
             points.pop(0)
         self.__drawPixels()
 
@@ -83,24 +85,24 @@ class SceneManger :
             points =  self.__scene.getEndingPointsPos()
         while len(points) >= Bresenham.getMinPointsCount():
             self.__tmp += Bresenham.getPixels(points)
-            self.__pixelsToDraw += Bresenham.getPixels(points)
+            self.__pixelsToDraw += convert(Bresenham.getPixels(points))
             points.pop(0)
         self.__drawPixels()
 
     def drawCircle(self):
         points =  self.__scene.getEndingPointsPos()
-        self.__pixelsToDraw += Circle.getPixels(points)
+        self.__pixelsToDraw += convert(Circle.getPixels(points))
         self.__drawPixels()
 
     def drawParabola(self):
         points = self.__scene.getEndingPointsPos()
-        self.__pixelsToDraw += Parabola.getPixels(points)
+        self.__pixelsToDraw += convert(Parabola.getPixels(points))
         self.__pixelsToDraw.reverse()
         self.__drawPixels()
 
     def drawBezie(self):
         points = self.__scene.getEndingPointsPos()
-        self.__pixelsToDraw += Bezie.getPixels(points)
+        self.__pixelsToDraw += convert(Bezie.getPixels(points))
         self.__drawPixels()
 
     def drawBSpline(self):
@@ -118,12 +120,10 @@ class SceneManger :
         if len(points) > 1:
             fillPoint = points.pop()
         points.append(points[0])
-        defaultColour = self.__scene.getPixelColour()
         self.drawBresenham(points)
         pixels = Fill.getPixels(fillPoint or points[0],self.__tmp)
-        self.__pixelsToDraw += pixels
-        self.__scene.setPixelColour(128,0,0)
+        self.__pixelsToDraw += convert(pixels, color=Colors.blue)
+        self.__pixelsToDraw.reverse()
         self.__drawPixels()
-        self.__scene.setPixelColour(*(defaultColour))
 
 
