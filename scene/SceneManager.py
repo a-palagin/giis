@@ -8,7 +8,7 @@ from utils.utils import singleton, MinPointsCountError, convert, Colors
 from Scene import GraphicScene
 from algorhitms.Line import CDA, Bresenham
 from algorhitms.Curve import Bezie, BSpline, Circle, Parabola
-from algorhitms.Fill import Fill
+from algorhitms.Fill import Fill, LineFilling
 
 @singleton
 class SceneManger :
@@ -120,10 +120,21 @@ class SceneManger :
         if len(points) > 1:
             fillPoint = points.pop()
         points.append(points[0])
+        print(points)
         self.drawBresenham(points)
+        print(points)
         pixels = Fill.getPixels(fillPoint or points[0],self.__tmp)
+        print(pixels)
         self.__pixelsToDraw += convert(pixels, color=Colors.blue)
         self.__pixelsToDraw.reverse()
         self.__drawPixels()
 
-
+    def drawLineFilling(self):
+        points = self.__scene.getEndingPointsPos()
+        vertexes = list(points)
+        points.append(points[0])
+        self.drawBresenham(points)
+        pixels = LineFilling.getPixels(vertexes, self.__tmp)
+        self.__pixelsToDraw += convert(pixels, color=Colors.blue)
+        self.__pixelsToDraw.reverse()
+        self.__drawPixels()
