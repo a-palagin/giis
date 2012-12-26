@@ -8,7 +8,8 @@ from utils.utils import singleton, MinPointsCountError, convert, Colors
 from Scene import GraphicScene
 from algorhitms.Line import CDA, Bresenham
 from algorhitms.Curve import Bezie, BSpline, Circle, Parabola
-from algorhitms.Fill import Fill
+from algorhitms.Fill import Fill, LineFilling
+from algorhitms.Amputation import Amputation
 
 @singleton
 class SceneManger :
@@ -126,4 +127,31 @@ class SceneManger :
         self.__pixelsToDraw.reverse()
         self.__drawPixels()
 
+    def drawLineFilling(self):
+        points = self.__scene.getEndingPointsPos()
+        vertexes = list(points)
+        points.append(points[0])
+        self.drawBresenham(points)
+        pixels = LineFilling.getPixels(vertexes, self.__tmp)
+        self.__pixelsToDraw += convert(pixels, color=Colors.blue)
+        self.__pixelsToDraw.reverse()
+        self.__drawPixels()
 
+    def drawAmputatedLine(self, points = []):
+        self.__tmp = []
+        if not points:
+            points =  self.__scene.getEndingPointsPos()
+        while len(points) >= Bresenham.getMinPointsCount():
+            self.__tmp += Bresenham.getPixels(points)
+            pixels = Amputation.setPixelVisibility(self.__tmp)
+            self.__pixelsToDraw += pixels
+            self.__pixelsToDraw.reverse()
+            points.pop(0)
+        self.__drawPixels()
+
+    def drawVisibleArea(self):
+        points = self.__scene.getEndingPointsPos()
+        vertexes = list(points)
+        points.append(points[0])
+        self.drawBresenham(points)
+        Amputation.getVisibleArea(vertexes, self.__tmp)
