@@ -14,6 +14,7 @@ class MenuBar(QtGui.QMenuBar):
         self.lineMenu = self.addMenu("Line")
         self.curveMenu = self.addMenu("Curve")
         self.fillMenu = self.addMenu("Fill")
+        self.amputateMenu = self.addMenu("Amputation")
         self.settingsMenu = self.addMenu("settings")
         self.lineMenu.addAction("DDA").triggered.connect(self.DDA)
         self.lineMenu.addAction("Bresenham").triggered.connect(self.Bresenham)
@@ -22,6 +23,9 @@ class MenuBar(QtGui.QMenuBar):
         self.curveMenu.addAction("Bezie").triggered.connect(self.bezie)
         self.curveMenu.addAction("B-Spline").triggered.connect(self.BSpline)
         self.fillMenu.addAction("Fill").triggered.connect(self.fill)
+        self.fillMenu.addAction("Line filling").triggered.connect(self.lineFilling)
+        self.amputateMenu.addAction("Create visible area").triggered.connect(self.visibleArea)
+        self.amputateMenu.addAction("Draw line").triggered.connect(self.amputatedLine)
         self.settingsMenu.addAction("set pixel size").triggered.connect(self.pixelSizeMenu)
         self.settingsMenu.addAction("clear").triggered.connect(self.clearScene)
         debugMode = self.settingsMenu.addAction("debug mode")
@@ -62,3 +66,12 @@ class MenuBar(QtGui.QMenuBar):
 
     def fill(self):
         self.__sceneManager.drawFill()
+
+    def lineFilling(self):
+        self.__sceneManager.drawLineFilling()
+
+    def amputatedLine(self):
+        self.__sceneManager.drawAmputatedLine()
+
+    def visibleArea(self):
+        self.__sceneManager.drawVisibleArea()
